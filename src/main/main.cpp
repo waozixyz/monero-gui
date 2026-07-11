@@ -99,7 +99,7 @@
   Q_IMPORT_PLUGIN(QCocoaIntegrationPlugin);
 #elif defined(Q_OS_WIN)
   Q_IMPORT_PLUGIN(QWindowsIntegrationPlugin);
-#elif defined(Q_OS_LINUX)
+#elif defined(Q_OS_UNIX) && !defined(Q_OS_MACOS) && !defined(Q_OS_ANDROID)
   Q_IMPORT_PLUGIN(QXcbIntegrationPlugin);
   Q_IMPORT_PLUGIN(QXcbGlxIntegrationPlugin);
 #endif
@@ -153,6 +153,7 @@ bool isAndroid = false;
 bool isWindows = false;
 bool isMac = false;
 bool isLinux = false;
+bool isFreeBSD = false;
 bool isTails = false;
 bool isDesktop = false;
 bool isOpenGL = true;
@@ -164,22 +165,24 @@ int main(int argc, char *argv[])
 
     // platform dependant settings
 #if !defined(Q_OS_ANDROID) && !defined(Q_OS_IOS)
-    bool isDesktop = true;
+    isDesktop = true;
 #elif defined(Q_OS_ANDROID)
-    bool isAndroid = true;
+    isAndroid = true;
 #elif defined(Q_OS_IOS)
-    bool isIOS = true;
+    isIOS = true;
 #endif
 #ifdef Q_OS_WIN
-    bool isWindows = true;
+    isWindows = true;
 #elif defined(Q_OS_LINUX)
-    bool isLinux = true;
-    bool isTails = TailsOS::detect();
+    isLinux = true;
+    isTails = TailsOS::detect();
+#elif defined(Q_OS_FREEBSD)
+    isFreeBSD = true;
 #elif defined(Q_OS_MAC)
-    bool isMac = true;
+    isMac = true;
 #endif
 #if defined(__aarch64__)
-    bool isARM = true;
+    isARM = true;
 #endif
 
     // detect low graphics mode (start-low-graphics-mode.bat)
@@ -192,7 +195,7 @@ int main(int argc, char *argv[])
 #endif
     // disable "QApplication: invalid style override passed" warning
     if (isDesktop) qputenv("QT_STYLE_OVERRIDE", "fusion");
-#ifdef Q_OS_LINUX
+#if defined(Q_OS_UNIX) && !defined(Q_OS_MACOS) && !defined(Q_OS_ANDROID)
     // platform xcb by default
     if (isDesktop && qEnvironmentVariableIsEmpty("QT_QPA_PLATFORM")) qputenv("QT_QPA_PLATFORM", "xcb");
 #endif
@@ -263,7 +266,7 @@ int main(int argc, char *argv[])
     }
     moneroAccountsDir = QDir::toNativeSeparators(moneroAccountsDir);
 
-#if defined(Q_OS_LINUX)
+#if defined(Q_OS_UNIX) && !defined(Q_OS_MACOS) && !defined(Q_OS_ANDROID)
     if (isDesktop) app.setWindowIcon(QIcon(":/images/appicon.ico"));
 #endif
 
@@ -485,6 +488,7 @@ Verify update binary using 'shasum'-compatible (SHA256 algo) output signed by tw
     engine.rootContext()->setContextProperty("isWindows", isWindows);
     engine.rootContext()->setContextProperty("isMac", isMac);
     engine.rootContext()->setContextProperty("isLinux", isLinux);
+    engine.rootContext()->setContextProperty("isFreeBSD", isFreeBSD);
     engine.rootContext()->setContextProperty("isIOS", isIOS);
     engine.rootContext()->setContextProperty("isAndroid", isAndroid);
     engine.rootContext()->setContextProperty("isOpenGL", isOpenGL);

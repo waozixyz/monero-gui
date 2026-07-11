@@ -89,7 +89,7 @@ QString getAccountName(){
     return accountName;
 }
 
-#ifdef Q_OS_LINUX
+#if defined(Q_OS_UNIX) && !defined(Q_OS_MACOS) && !defined(Q_OS_ANDROID)
 QString xdgMime(){
     return QString(
         "[Desktop Entry]\n"
@@ -115,7 +115,7 @@ void registerXdgMime(){
     // Register desktop entry
     // - MacOS handled via Info.plist
     // - Windows handled in the installer by rbrunner7
-    // - Linux written to `QStandardPaths::ApplicationsLocation`
+    // - Unix desktops written to `QStandardPaths::ApplicationsLocation`
     // - Tails written to persistent dotfiles
     QString mime = xdgMime();
     QString appPath = QStandardPaths::writableLocation(QStandardPaths::ApplicationsLocation);

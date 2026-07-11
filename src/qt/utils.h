@@ -38,7 +38,7 @@ QByteArray fileGetContents(QString path);
 QByteArray fileOpen(QString path);
 bool fileWrite(QString path, QString data);
 QString getAccountName();
-#ifdef Q_OS_LINUX
+#if defined(Q_OS_UNIX) && !defined(Q_OS_MACOS) && !defined(Q_OS_ANDROID)
 QString xdgMime();
 void registerXdgMime();
 #endif

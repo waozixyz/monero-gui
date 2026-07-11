@@ -1430,7 +1430,7 @@ ApplicationWindow {
 
             if (isTails) {
                 oshelper.createDesktopEntry();
-            } else if (isLinux) {
+            } else if (isLinux || isFreeBSD) {
                 confirmationDialog.title = qsTr("Desktop entry") + translationManager.emptyString;
                 confirmationDialog.text  = qsTr("Would you like to register Monero GUI Desktop entry?") + translationManager.emptyString;
                 confirmationDialog.icon = StandardIcon.Question;
@@ -1455,7 +1455,7 @@ ApplicationWindow {
             return "";
         }
 
-        property bool askDesktopShortcut: isLinux
+        property bool askDesktopShortcut: isLinux || isFreeBSD
         property bool askStopLocalNode: true
         property string language: 'English (US)'
         property string language_wallet: 'English'

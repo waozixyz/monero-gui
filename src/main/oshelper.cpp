@@ -52,7 +52,7 @@
 #include <shlobj.h>
 #include <windows.h>
 #endif
-#if defined(Q_OS_LINUX) && !defined(Q_OS_ANDROID)
+#if defined(Q_OS_UNIX) && !defined(Q_OS_MACOS) && !defined(Q_OS_ANDROID)
 #include "qt/utils.h"
 #endif
 
@@ -121,7 +121,7 @@ OSHelper::OSHelper(QObject *parent) : QObject(parent)
 
 void OSHelper::createDesktopEntry() const
 {
-#if defined(Q_OS_LINUX) && !defined(Q_OS_ANDROID)
+#if defined(Q_OS_UNIX) && !defined(Q_OS_MACOS) && !defined(Q_OS_ANDROID)
     registerXdgMime();
 #endif
 }
